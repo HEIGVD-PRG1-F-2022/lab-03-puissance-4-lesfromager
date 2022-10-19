@@ -46,27 +46,33 @@ void playerInput(bool player, vector<vector<int>>& gameBoard)
 
     int sizeBoard = gameBoard[0].size();
 
-    cout << sizeBoard;
-
     do
     {
         cout << "Entrez le numero de colonne :";
         cin >> colonne;
-        if (colonne > 0 && colonne < sizeBoard){
+        colonne--;
+
+        bool checkCondition = colonne >= 0 && colonne < sizeBoard;
+        if (!checkCondition){
             cout << "Colonne non valide" << endl;
             continue;
         }
 
+
         firstCellAvailable = firstAvailableCell(gameBoard, colonne);
+        if(firstCellAvailable == -1)
+        {
+            cout << "Colonne Pleine " << endl;
+        }
 
-    }while ((colonne > 0 && colonne < sizeBoard) || firstCellAvailable != -1);
+    }while (!(colonne >= 0 && colonne < sizeBoard) || firstCellAvailable == -1);
 
-    gameBoard.at(colonne).at(firstCellAvailable) = playerChar;
+    gameBoard.at(firstCellAvailable).at(colonne) = playerChar;
 }
 
 int firstAvailableCell (const vector<vector<int>>& gameBoard, int colonne){
-    for (int i = gameBoard.at(0).size(); i >= 0; i--){
-        if(gameBoard.at(colonne).at(i) == 0) {
+    for (int i = gameBoard.size()-1; i >= 0; i--){
+        if(gameBoard.at(i).at(colonne) == 0) {
             return i;
         }
     }
