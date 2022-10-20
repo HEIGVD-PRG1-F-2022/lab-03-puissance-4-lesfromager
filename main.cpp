@@ -31,7 +31,9 @@ int main(){
         displayGameBoard(gameBoard);
 
         //winner  =  || checkHorizontal(gameBoard) || checkVertical(gameBoard);
-        winner = checkHorizontal(gameBoard, lastMovePlayer) || checkVertical(gameBoard, lastMovePlayer);
+        winner = checkHorizontal(gameBoard, lastMovePlayer) ||
+                checkVertical(gameBoard, lastMovePlayer) ||
+                checkDiagonal(gameBoard, lastMovePlayer);
         playerTurn = winner ? playerTurn : !playerTurn;
     }
 
@@ -76,6 +78,49 @@ vector<int> playerInput(bool player, vector<vector<int>>& gameBoard)
     return movePlayer;
 }
 
+bool checkDiagonal(const vector<vector<int>>& gameBoard, const vector<int>& lastMove)
+{
+    int ligneLastMove = lastMove.at(0);
+    int colonneLastMove = lastMove.at(1);
+
+    int playerValue = gameBoard.at(ligneLastMove).at(colonneLastMove);
+    int countTrailing = 1;
+
+    bool upRight = true;
+    bool downLeft = true;
+
+    for (int i = 1; i <= 4; i++){
+        int upIndex = ligneLastMove + i;
+        int downIndex = ligneLastMove - i;
+
+        int rightIndex = colonneLastMove + i;
+        int leftIndex = colonneLastMove - i;
+
+        if (upRight && (upIndex < gameBoard.size() && rightIndex < gameBoard.at(ligneLastMove).size())){
+            int checkedCellValue = gameBoard.at(upIndex).at(rightIndex);
+            cout << "checkedCellValue " <<checkedCellValue << endl;
+            if (checkedCellValue == playerValue) {
+                countTrailing++;
+                cout << "haut " <<countTrailing << endl;
+            }else{
+                upRight = false;
+            }
+        }
+        if (downLeft && downIndex >= 0 && leftIndex >= 0){
+            cout << "checkedCellValue bas " <<downIndex << " "  <<  leftIndex<<endl;
+            int checkedCellValue = gameBoard.at(downIndex).at(leftIndex);
+            if(checkedCellValue == playerValue){
+                cout << "bas " << countTrailing << endl;
+                countTrailing++;
+            }else{
+                downLeft = false;
+            }
+        }
+    }
+    //cout << countTrailing << endl;
+    return (countTrailing >= 4);
+}
+
 bool checkVertical(const vector<vector<int>>& gameBoard, const vector<int>& lastMove){
     bool up = true;
     bool down = true;
@@ -106,7 +151,6 @@ bool checkVertical(const vector<vector<int>>& gameBoard, const vector<int>& last
             }
         }
     }
-    cout << countTrailing << endl;
     return (countTrailing >= 4);
 }
 
